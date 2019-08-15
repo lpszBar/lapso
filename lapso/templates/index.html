@@ -1,0 +1,92 @@
+<html>
+<head>
+
+  <link rel="stylesheet" href="css/lightbox.css">
+  
+<style>
+
+.album {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: baseline;
+}
+.photo {
+    padding:20px;
+    margin-right:20px;
+    border: 1px solid gainsboro;
+    font-size: 10px;
+}
+.flashes {
+    color: red;
+    font-size:33px;
+}
+</style>
+
+</head>
+<body>
+
+ {% with messages = get_flashed_messages() %}
+   {% if messages %}
+     <ul class="flashes">
+        {% for message in messages %}
+         <div class="message_flash">{{ message }}</div>
+        {% endfor %}
+    </ul>
+  {% endif %}
+ {% endwith %}
+
+     
+     <a href="/upload">Upload</a>
+
+
+     <br><br><hr><br>
+
+     
+     
+           <h2>Photos</h2>
+
+                  {% set photodates = [] %}
+
+           <section>
+             <div>
+                  {% for photo in photos %}
+                
+                {% if photo.d not in photodates %}
+                  {% if photodates %}
+                  </div>
+             <div>
+                    {% endif %}
+                
+                <h2>{{ photo.d }}<h2>
+
+                  {% endif %}
+
+     
+                  <a data-lightbox="foto"
+                     href="{{ photo.object}}"
+                     data-alt="{{ photo.bytessize }} - {{ photo.width }}x{{ photo.height }}">
+                    <img class="example-image" src="{{ photo.object }}" height="300">
+                  </a>
+
+                 {% if photodates.append(photo.d) %}{% endif %}
+
+
+                  {% endfor %}
+               </div>
+            </section>
+
+
+<script src="js/lightbox-plus-jquery.min.js"></script>
+
+
+<script>
+    lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true
+    })
+</script>
+
+</body>
+</html>

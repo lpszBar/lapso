@@ -1,0 +1,11 @@
+create table photos (
+       id INTEGER PRIMARY KEY,
+       object TEXT,
+       bytessize TEXT,
+       width INT,
+       height INT,
+       note TEXT,
+       dt_uploaded TEXT,
+       dt TEXT,
+       original_name TEXT
+ );
