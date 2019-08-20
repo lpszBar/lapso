@@ -8,6 +8,6 @@ echo "Checking dependencies..."
 cd db
 sh ./init-db.sh
 cd ..
-cd ./lapso
+
 echo "Starting app in dir ${PWD}"
-FLASK_ENV=development FLASK_APP=app.py flask run --host="0.0.0.0"
+FLASK_ENV=development FLASK_APP=lapso/app.py flask run --host="0.0.0.0"
