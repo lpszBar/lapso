@@ -27,3 +27,19 @@ with description('whatever') as self:
     with it('POST (/upload) with no payload returns 302'):
         response = self.app.post('/upload')
         expect(response.status_code).to(equal(302))
+
+    with it('get (/delete/33) returns 404'):
+        response = self.app.get('/delete/33')
+        expect(response.status_code).to(equal(404))
+
+    with it('post (/delete/33) returns 405'):
+        response = self.app.post('/delete/33')
+        expect(response.status_code).to(equal(405))
+
+    with it('get (/delete/) returns 404'):
+        response = self.app.get('/delete/')
+        expect(response.status_code).to(equal(404))
+
+    with it('get (/delete) returns 404'):
+        response = self.app.get('/delete')
+        expect(response.status_code).to(equal(404))

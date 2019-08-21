@@ -40,6 +40,18 @@ def upload_file_to_s3(filepath, filename, content_type,
     return "{}{}".format(S3_LOCATION, filename)
 
 
+def delete_file_from_s3(bucket_name, s3_key):
+    try:
+        result = s3.delete_object(
+            Bucket=bucket_name,
+            Key=s3_key
+        )
+    except Exception as e:
+        print("Something Happened: ", e)
+        raise e
+    return result
+
+
 def random_string(length):
     return ''.join(random.choice(string.ascii_letters+string.digits)
                    for i in range(length))
