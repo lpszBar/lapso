@@ -43,7 +43,15 @@ def index():
               d=datetime.datetime.strptime(
                     row[2],
                     '%Y-%m-%d %H:%M:%S'
+                ).strftime("%d %B %Y"),
+              d_dmy=datetime.datetime.strptime(
+                    row[2],
+                    '%Y-%m-%d %H:%M:%S'
                 ).strftime("%d-%m-%Y"),
+              d_my=datetime.datetime.strptime(
+                    row[2],
+                    '%Y-%m-%d %H:%M:%S'
+                ).strftime("%B %Y"),
               bytessize=("{0:.3f}".format(int(row[3]) / (1024 * 1024))),
               width=row[4],
               height=row[5])
@@ -87,6 +95,8 @@ def upload_photo():
             datetime_original, '%Y:%m:%d %H:%M:%S'
         )
         datetime_original = datetime_original.strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        flash("This photo is not dated. We assumed is today.")
 
     url = upload_file_to_s3(file_path, file.filename,
                             file.content_type, app.config["S3_BUCKET"])
@@ -105,7 +115,6 @@ def upload_photo():
 
 @app.route("/delete/<id_image>", methods=["GET"])
 def delete_photo(id_image):
-    # GET IMAGE DATA
     cur = get_db().execute(
         "select id, object from photos where id=?", (id_image,)
     )

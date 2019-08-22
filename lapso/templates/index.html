@@ -2,7 +2,7 @@
 <head>
 
   <link rel="stylesheet" href="css/lightbox.css">
-  
+
 <style>
 
 .album {
@@ -44,6 +44,10 @@
      <br><br><hr><br>
 
 
+     <table>
+       <tr>
+         <td>
+
            <h2>Photos</h2>
 
                   {% set photodates = [] %}
@@ -54,15 +58,14 @@
 
                 {% if photo.d not in photodates %}
                   {% if photodates %}
-                  </div>
+             </div>
              <div>
                     {% endif %}
 
-                <h2>{{ photo.d }}<h2>
+                <a name="{{ photo.d_my }}"><h2>{{ photo.d }}<h2></a>
 
                   {% endif %}
 
-     
                   <a data-lightbox="foto"
                      href="{{ photo.object}}"
                      data-alt="{{ photo.bytessize }} - {{ photo.width }}x{{ photo.height }}">
@@ -74,9 +77,35 @@
                   [<a href="/delete/{{ photo.id }}">x</a>]
 
                   {% endfor %}
-               </div>
-            </section>
+             </div>
+           </section>
 
+         </td>
+         <td>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         </td>
+         <td valign="top" width="200">
+
+           {% set photo_months = [] %}
+
+           <section>
+             <div>
+
+              {% for photo in photos %}
+
+              {% if photo.d_my not in photo_months %}
+
+              <a href="#{{photo.d_my}}">{{ photo.d_my }}</a> <br><br>
+
+              {% if photo_months.append(photo.d_my) %}{% endif %}
+
+              {% endif %}
+
+              {% endfor %}
+
+         </td>
+       </tr>
+     </table>
 
 <script src="js/lightbox-plus-jquery.min.js"></script>
 
