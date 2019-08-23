@@ -11,7 +11,10 @@ from images import get_image_properties
 app = Flask(__name__)
 app.config.from_object("config")
 app.secret_key = 'LhZGNnC2pTt4CGkSQ9KaJqh5MfFnEBHvgjHBQ'
-app.users = {'odeceixe@gmail.com': {'password': 'arderius'}}
+app.users = {
+    'odeceixe@gmail.com': {'password': 'lapsopwd1'},
+    'otro@email.com': {'password': 'lapsopwd2'}
+}
 DATABASE = '/app/db/lapso.db'
 
 login_manager = flask_login.LoginManager()

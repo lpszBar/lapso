@@ -53,7 +53,12 @@ with description('when logged') as self:
 
     with it('logging with correct user OK'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'arderius'})
+            'email': 'odeceixe@gmail.com', 'password': 'lapsopwd1'})
+        expect(r.status_code).to(equal(302))
+
+    with it('logging with a second correct user OK'):
+        r = self.app.post('/login', data={
+            'email': 'otro@email.com', 'password': 'lapsopwd2'})
         expect(r.status_code).to(equal(302))
 
     with it('logging with incorrect user fails'):
@@ -63,7 +68,7 @@ with description('when logged') as self:
 
     with it('logged / is reacheable'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'arderius'})
+            'email': 'odeceixe@gmail.com', 'password': 'lapsopwd1'})
         expect(r.status_code).to(equal(302))
         r = self.app.get('/')
         expect(r.status_code).to(equal(200))
@@ -74,9 +79,9 @@ with description('when logged') as self:
         r = self.app.get('/')
         expect(r.status_code).to(equal(403))
 
-    with it('logged / is reacheable, and when logged out is unreachable'):
+    with it('logged / is reacheable, and when logged out / is unreachable'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'arderius'})
+            'email': 'odeceixe@gmail.com', 'password': 'lapsopwd1'})
         expect(r.status_code).to(equal(302))
         r = self.app.get('/')
         expect(r.status_code).to(equal(200))
