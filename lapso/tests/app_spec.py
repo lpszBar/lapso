@@ -8,9 +8,9 @@ with description('whatever') as self:
         self.app = app.test_client()
         self.app.testing = True
 
-    with it('GET / returns 200'):
+    with it('GET / returns 403'):
         response = self.app.get('/')
-        expect(response.status_code).to(equal(200))
+        expect(response.status_code).to(equal(403))
 
     with it('POST / returns 405'):
         response = self.app.post('/')
@@ -20,17 +20,17 @@ with description('whatever') as self:
         response = self.app.get('/asdf')
         expect(response.status_code).to(equal(404))
 
-    with it('GET (/upload) returns 200'):
+    with it('GET (/upload) returns 403'):
         response = self.app.get('/upload')
-        expect(response.status_code).to(equal(200))
+        expect(response.status_code).to(equal(403))
 
-    with it('POST (/upload) with no payload returns 302'):
+    with it('POST (/upload) with no payload returns 403'):
         response = self.app.post('/upload')
-        expect(response.status_code).to(equal(302))
+        expect(response.status_code).to(equal(403))
 
-    with it('get (/delete/33) returns 404'):
+    with it('get (/delete/33) returns 403'):
         response = self.app.get('/delete/33')
-        expect(response.status_code).to(equal(404))
+        expect(response.status_code).to(equal(403))
 
     with it('post (/delete/33) returns 405'):
         response = self.app.post('/delete/33')

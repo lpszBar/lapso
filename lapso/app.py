@@ -17,11 +17,13 @@ DATABASE = '/app/db/lapso.db'
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
+
 
 @app.login_manager.user_loader
 def user_loader(email):
@@ -41,7 +43,6 @@ def request_loader(request):
 
     user = User()
     user.id = email
-
     user.is_authenticated = request.form['password'] == app.users[email]['password']
 
     return user
@@ -57,13 +58,16 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return '''
                <form action='login' method='POST'>
-                <input type='text' name='email' id='email' placeholder='email'/>
-                <input type='password' name='password' id='password' placeholder='password'/>
+                <input type='text' name='email' id='email'
+                       placeholder='email'/>
+                <input type='password' name='password'
+                       id='password' placeholder='password'/>
                 <input type='submit' name='submit'/>
                </form>
                '''
@@ -86,9 +90,11 @@ def logout():
     flash('Logged out')
     return redirect("/login")
 
+
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return 'Unauthorized'
+    return 'Unauthorized', 403
+
 
 @app.route("/")
 @flask_login.login_required
