@@ -38,19 +38,6 @@ def user_loader(email):
     return user
 
 
-@app.login_manager.request_loader
-def request_loader(request):
-    email = request.form.get('email')
-    if email not in app.users:
-        return
-
-    user = User()
-    user.id = email
-    user.is_authenticated = request.form['password'] == app.users[email]['password']
-
-    return user
-
-
 class User(flask_login.UserMixin):
     pass
 
