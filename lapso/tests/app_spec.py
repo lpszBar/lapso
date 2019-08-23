@@ -2,7 +2,7 @@ from mamba import description, before, it
 from expects import expect, equal
 from app import app
 
-with description('whatever') as self:
+with description('when not logged') as self:
 
     with before.each:
         self.app = app.test_client()
@@ -43,3 +43,44 @@ with description('whatever') as self:
     with it('get (/delete) returns 404'):
         response = self.app.get('/delete')
         expect(response.status_code).to(equal(404))
+
+
+with description('when logged') as self:
+
+    with before.each:
+        self.app = app.test_client()
+        self.app.testing = True
+
+    with it('logging with correct user OK'):
+        r = self.app.post('/login', data={
+            'email': 'odeceixe@gmail.com', 'password': 'arderius'})
+        expect(r.status_code).to(equal(302))
+
+    with it('logging with incorrect user fails'):
+        r = self.app.post('/login', data={
+            'email': 'odeceixe@gmail.com', 'password': 'WRONG'})
+        expect(r.status_code).to(equal(302))
+
+    with it('logged / is reacheable'):
+        r = self.app.post('/login', data={
+            'email': 'odeceixe@gmail.com', 'password': 'arderius'})
+        expect(r.status_code).to(equal(302))
+        r = self.app.get('/')
+        expect(r.status_code).to(equal(200))
+
+    with it('logged / is unreacheable'):
+        r = self.app.post('/login', data={
+            'email': 'odeceixe@gmail.com', 'password': 'WRONG'})
+        r = self.app.get('/')
+        expect(r.status_code).to(equal(403))
+
+    with it('logged / is reacheable, and when logged out is unreachable'):
+        r = self.app.post('/login', data={
+            'email': 'odeceixe@gmail.com', 'password': 'arderius'})
+        expect(r.status_code).to(equal(302))
+        r = self.app.get('/')
+        expect(r.status_code).to(equal(200))
+        r = self.app.get('/logout')
+        expect(r.status_code).to(equal(302))
+        r = self.app.get('/')
+        expect(r.status_code).to(equal(403))
