@@ -7,14 +7,11 @@ import flask_login
 from helpers import upload_file_to_s3, allowed_file
 from helpers import random_string, delete_file_from_s3
 from images import get_image_properties
+from hashpwd import verify_password
 
 app = Flask(__name__)
 app.config.from_object("config")
 app.secret_key = 'LhZGNnC2pTt4CGkSQ9KaJqh5MfFnEBHvgjHBQ'
-app.users = {
-    'odeceixe@gmail.com': {'password': 'lapsopwd1'},
-    'otro@email.com': {'password': 'lapsopwd2'}
-}
 DATABASE = '/app/db/lapso.db'
 
 login_manager = flask_login.LoginManager()
@@ -29,17 +26,35 @@ def get_db():
 
 
 @app.login_manager.user_loader
-def user_loader(email):
-    if email not in app.users:
-        return
+def user_loader(user_id):
+    cur = get_db().execute(
+        """select id
+           from users
+           where id=?""",
+        (user_id,)
+    )
+    r = cur.fetchone()
+    cur.close()
+    if not r:
+        return None
 
-    user = User()
-    user.id = email
+    user = User(id=user_id)
     return user
 
 
 class User(flask_login.UserMixin):
-    pass
+    def __init__(self, id, active=True):
+        self.id = id
+        self.active = active
+
+    def is_active(self):
+        return self.active
+
+    def is_anonymous(self):
+        return False
+
+    def is_authenticated(self):
+        return True
 
 
 @app.teardown_appcontext
@@ -63,14 +78,31 @@ def login():
                '''
 
     email = request.form['email']
-    if request.form['password'] == app.users[email]['password']:
-        user = User()
-        user.id = email
-        flask_login.login_user(user)
-        return redirect("/")
 
-    flash('Bad login')
-    return redirect('/login')
+    cur = get_db().execute(
+        """select id, email, password
+           from users
+           where email=?""",
+        (request.form['email'],)
+    )
+    r = cur.fetchone()
+    if not r:
+        return redirect('/login')
+
+    user = {
+        "id": r[0],
+        "user": r[1],
+        "password": r[2]
+    }
+    cur.close()
+
+    if not verify_password(user.get('password'), request.form['password']):
+        return redirect('/login')
+
+    user = User(id=user.get('id'))
+    user.id = user.id
+    flask_login.login_user(user)
+    return redirect("/")
 
 
 @app.route('/logout')

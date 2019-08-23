@@ -2,6 +2,11 @@ from mamba import description, before, it
 from expects import expect, equal
 from app import app
 
+USERS = [
+    {"email": "one@email.com", "password": "password1"},
+    {"email": "two@email.com", "password": "password2"}
+]
+
 with description('when not logged') as self:
 
     with before.each:
@@ -53,35 +58,35 @@ with description('when logged') as self:
 
     with it('logging with correct user OK'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'lapsopwd1'})
+            'email': USERS[0]['email'], 'password': USERS[0]['password']})
         expect(r.status_code).to(equal(302))
 
     with it('logging with a second correct user OK'):
         r = self.app.post('/login', data={
-            'email': 'otro@email.com', 'password': 'lapsopwd2'})
+            'email': USERS[1]['email'], 'password': USERS[0]['password']})
         expect(r.status_code).to(equal(302))
 
     with it('logging with incorrect user fails'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'WRONG'})
+            'email': USERS[0]['email'], 'password': 'WRONG'})
         expect(r.status_code).to(equal(302))
 
     with it('logged / is reacheable'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'lapsopwd1'})
+            'email': USERS[0]['email'], 'password': USERS[0]['password']})
         expect(r.status_code).to(equal(302))
         r = self.app.get('/')
         expect(r.status_code).to(equal(200))
 
     with it('logged / is unreacheable'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'WRONG'})
+            'email': USERS[0]['email'], 'password': 'WRONG'})
         r = self.app.get('/')
         expect(r.status_code).to(equal(403))
 
     with it('logged / is reacheable, and when logged out / is unreachable'):
         r = self.app.post('/login', data={
-            'email': 'odeceixe@gmail.com', 'password': 'lapsopwd1'})
+            'email': USERS[0]['email'], 'password': USERS[0]['password']})
         expect(r.status_code).to(equal(302))
         r = self.app.get('/')
         expect(r.status_code).to(equal(200))
