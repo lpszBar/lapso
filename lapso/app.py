@@ -3,21 +3,52 @@ from flask import redirect, g, flash, send_from_directory
 import sqlite3
 import datetime
 import os
+import flask_login
 from helpers import upload_file_to_s3, allowed_file
 from helpers import random_string, delete_file_from_s3
 from images import get_image_properties
 
 app = Flask(__name__)
 app.config.from_object("config")
-
+app.secret_key = 'LhZGNnC2pTt4CGkSQ9KaJqh5MfFnEBHvgjHBQ'
+app.users = {'odeceixe@gmail.com': {'password': 'arderius'}}
 DATABASE = '/app/db/lapso.db'
 
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
 
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
+
+@app.login_manager.user_loader
+def user_loader(email):
+    if email not in app.users:
+        return
+
+    user = User()
+    user.id = email
+    return user
+
+
+@app.login_manager.request_loader
+def request_loader(request):
+    email = request.form.get('email')
+    if email not in app.users:
+        return
+
+    user = User()
+    user.id = email
+
+    user.is_authenticated = request.form['password'] == app.users[email]['password']
+
+    return user
+
+
+class User(flask_login.UserMixin):
+    pass
 
 
 @app.teardown_appcontext
@@ -26,8 +57,41 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return '''
+               <form action='login' method='POST'>
+                <input type='text' name='email' id='email' placeholder='email'/>
+                <input type='password' name='password' id='password' placeholder='password'/>
+                <input type='submit' name='submit'/>
+               </form>
+               '''
+
+    email = request.form['email']
+    if request.form['password'] == app.users[email]['password']:
+        user = User()
+        user.id = email
+        flask_login.login_user(user)
+        return redirect("/")
+
+    flash('Bad login')
+    return redirect('/login')
+
+
+@app.route('/logout')
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    flash('Logged out')
+    return redirect("/login")
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return 'Unauthorized'
 
 @app.route("/")
+@flask_login.login_required
 def index():
     cur = get_db().execute(
         """select id, object, dt, bytessize, width, height
@@ -61,11 +125,13 @@ def index():
 
 
 @app.route("/upload")
+@flask_login.login_required
 def upload():
     return render_template("upload.html")
 
 
 @app.route("/upload", methods=["POST"])
+@flask_login.login_required
 def upload_photo():
 
     try:
@@ -114,6 +180,7 @@ def upload_photo():
 
 
 @app.route("/delete/<id_image>", methods=["GET"])
+@flask_login.login_required
 def delete_photo(id_image):
     cur = get_db().execute(
         "select id, object from photos where id=?", (id_image,)
