@@ -28,7 +28,7 @@ def get_db():
 @app.login_manager.user_loader
 def user_loader(user_id):
     cur = get_db().execute(
-        """select id
+        """select id, email
            from users
            where id=?""",
         (user_id,)
@@ -38,13 +38,14 @@ def user_loader(user_id):
     if not r:
         return None
 
-    user = User(id=user_id)
+    user = User(id=r[0], email=r[1])
     return user
 
 
 class User(flask_login.UserMixin):
-    def __init__(self, id, active=True):
+    def __init__(self, id, email=None, active=True):
         self.id = id
+        self.email = email
         self.active = active
 
     def is_active(self):
@@ -67,15 +68,7 @@ def close_connection(exception):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return '''
-               <form action='login' method='POST'>
-                <input type='text' name='email' id='email'
-                       placeholder='email'/>
-                <input type='password' name='password'
-                       id='password' placeholder='password'/>
-                <input type='submit' name='submit'/>
-               </form>
-               '''
+        return render_template("login.html")
 
     email = request.form['email']
 

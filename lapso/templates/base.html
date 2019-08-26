@@ -1,0 +1,77 @@
+<html>
+<head>
+
+  <link rel="stylesheet" href="css/lightbox.css">
+
+<style>
+
+.album {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: baseline;
+}
+.photo {
+    padding:20px;
+    margin-right:20px;
+    border: 1px solid gainsboro;
+    font-size: 10px;
+}
+.flashes {
+    color: red;
+    font-size:33px;
+}
+</style>
+
+</head>
+<body>
+
+ {% with messages = get_flashed_messages() %}
+   {% if messages %}
+     <ul class="flashes">
+        {% for message in messages %}
+         <div class="message_flash">{{ message }}</div>
+        {% endfor %}
+    </ul>
+  {% endif %}
+ {% endwith %}
+
+
+     <table style="background-color:#ffffac;" width="100%">
+       <tr>
+         <td>
+           <a href="/">Photos</a>
+         </td>
+         <td>
+           <a href="/upload">Upload</a>
+         </td>
+         <td>
+           {% if current_user.is_authenticated %}
+           You are logged as {{ current_user.email }}
+           {% else %}
+            error
+           {% endif %}
+         </td>
+         <td>
+           <a href="/logout">Logout</a>
+         </td>
+       </tr>
+     </table>
+
+     <br>
+
+     {% block content %}{% endblock %}
+
+<script src="js/lightbox-plus-jquery.min.js"></script>
+
+
+<script>
+    lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true
+    })
+</script>
+
+</body>
+</html>
