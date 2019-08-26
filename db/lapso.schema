@@ -19,7 +19,7 @@ create table users (
 );
 
 insert into users (email, password, created_at, last_access_at) VALUES ('one@email.com', '895f7de871d88f9697f43fed585301e1839150358237d4017f5288ff701125aeb9959efc5e68ed113977e55aabd331eb36d90a9a3115442a5c544eaf2986804cdd9b192622252d6a579e3c819427cfae4c06ae7be1b39aa2910283bc9bb9cbb1', '2017-02-11 02:12:11', null);
-# password1
+-- password1
 
 insert into users (email, password, created_at, last_access_at) VALUES ('two@email.com', '20aeadf9474478c576a3568fb5e8e724bc8b716a738cef6981efd05a84f77f113b54f94ce2de4608e8b3bb6a0e81e3f47aafd84c8a720e6d210195f3a98dad219f373ef2de415e1f8f03360f4a70dc338a7938a443e4125c831602b4eedf775e', '2017-02-11 02:12:21', null);
-# password2
+-- password2

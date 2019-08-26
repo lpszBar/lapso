@@ -12,7 +12,7 @@ RUN apk add --no-cache sqlite zlib-dev jpeg-dev build-base python-dev
 
 RUN pip install flask==1.1.1 boto3==1.9.196 Pillow==6.1.0 Flask-Login==0.4.1
 #tests
-RUN pip install mamba==0.10 expects==0.9.0 pycodestyle==2.5.0
+RUN pip install pytest==5.1.1 pycodestyle==2.5.0
 
 #ENV LIBRARY_PATH=/lib:/usr/lib  # not sure if this is used for pillow
 

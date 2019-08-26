@@ -12,8 +12,7 @@ dev: image
 
 test: image
 	docker run -it --rm -v $(CURDIR):/app -w /app --entrypoint pycodestyle $(IMAGE_NAME) --show-source --show-pep8 --max-line-length=120 /app
-	docker run -it --rm -v $(CURDIR):/app -w /app --entrypoint mamba -e PYTHONPATH=/app/lapso $(IMAGE_NAME) /app/lapso/tests
+	docker run -it --rm -v $(CURDIR):/app -w /app/lapso/tests --entrypoint pytest -e PYTHONPATH=/app/lapso $(IMAGE_NAME) --verbose -p no:warnings
 
 reset-db:
 	rm db/lapso.db
-
