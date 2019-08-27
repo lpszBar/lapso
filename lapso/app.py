@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request
-from flask import redirect, g, flash, send_from_directory
-import sqlite3
 import datetime
 import os
+import sqlite3
+
 import flask_login
-from helpers import upload_file_to_s3, allowed_file
-from helpers import random_string, delete_file_from_s3
-from images import get_image_properties
+from flask import (Flask, flash, g, redirect, render_template, request,
+                   send_from_directory)
 from hashpwd import verify_password
+from helpers import (allowed_file, delete_file_from_s3, random_string,
+                     upload_file_to_s3)
+from images import get_image_properties
 
 app = Flask(__name__)
 app.config.from_object("config")

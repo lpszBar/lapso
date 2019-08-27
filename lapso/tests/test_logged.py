@@ -19,6 +19,7 @@ def db(tmpdir):
     datafile = open("../../db/lapso.schema")
     sql = datafile.read()
     conn.executescript(sql)
+    datafile.close()
     yield conn
     conn.close()
 
