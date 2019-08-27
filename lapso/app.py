@@ -191,7 +191,7 @@ def upload_photo():
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     cur = get_db().execute("""
         insert into photos
-        (object, dt_uploaded, dt,original_name, bytessize, width, height, photouser)
+        (object, dt_uploaded, dt,original_name, bytessize, width, height, user_id)
         values
         (?,?,?,?,?,?,?,?)""", (url, now, datetime_original or now, file.filename,
                                bytessize, width, height,

@@ -8,8 +8,8 @@ create table photos (
        dt_uploaded TEXT,
        dt TEXT,
        original_name TEXT,
-       photouser INTEGER,
-       FOREIGN KEY(photouser) REFERENCES users(id)
+       user_id INTEGER,
+       FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
 create table users (
