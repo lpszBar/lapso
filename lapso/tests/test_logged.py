@@ -34,12 +34,9 @@ def test_logged_user_can_get_root_page_and_logout(app_client, db):
         data={'email': user.get('email'), 'password': 'password1'}
     )
     assert response.headers.get('location') == 'http://localhost/'
-    response = app_client.get('/')
-    assert response.status_code == 200
-    response = app_client.get('/logout')
-    assert response.status_code == 302
-    response = app_client.get('/')
-    assert response.status_code != 200
+    assert app_client.get('/').status_code == 200
+    assert app_client.get('/logout').status_code == 302
+    assert app_client.get('/').status_code != 200
 
 
 def test_badly_logged_user_cannot_get_root_page(app_client, db):
