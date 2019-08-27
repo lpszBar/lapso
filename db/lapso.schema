@@ -7,7 +7,9 @@ create table photos (
        note TEXT,
        dt_uploaded TEXT,
        dt TEXT,
-       original_name TEXT
+       original_name TEXT,
+       photouser INTEGER,
+       FOREIGN KEY(photouser) REFERENCES users(id)
 );
 
 create table users (

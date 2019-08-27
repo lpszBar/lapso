@@ -191,10 +191,11 @@ def upload_photo():
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     cur = get_db().execute("""
         insert into photos
-        (object, dt_uploaded, dt,original_name, bytessize, width, height)
+        (object, dt_uploaded, dt,original_name, bytessize, width, height, photouser)
         values
-        (?,?,?,?,?,?,?)""", (url, now, datetime_original or now, file.filename,
-                             bytessize, width, height,))
+        (?,?,?,?,?,?,?,?)""", (url, now, datetime_original or now, file.filename,
+                               bytessize, width, height,
+                               flask_login.current_user.get_id(),))
     g._database.commit()
     cur.close()
     os.remove(file_path)
