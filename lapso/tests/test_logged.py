@@ -25,7 +25,7 @@ def db(tmpdir):
 
 def test_logged_user_can_get_root_page_and_logout(app_client, db):
     row = db.execute(
-        "SELECT email, password FROM users"
+        "SELECT email FROM users"
     ).fetchone()
     user = {"email": row[0]}
     response = app_client.post(
