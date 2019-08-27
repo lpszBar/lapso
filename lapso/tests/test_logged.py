@@ -4,7 +4,7 @@ import sqlite3
 import pytest
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def app_client():
     from app import app
     app = app.test_client()
