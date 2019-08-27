@@ -116,9 +116,10 @@ def unauthorized_handler():
 @flask_login.login_required
 def index():
     cur = get_db().execute(
-        """select id, object, dt, bytessize, width, height
+        """SELECT id, object, dt, bytessize, width, height
            from photos
-           order by dt desc"""
+           WHERE user_id=?
+           order by dt desc""", (flask_login.current_user.get_id(),)
     )
     photos = [dict(id=row[0],
               object=row[1],
