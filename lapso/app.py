@@ -186,15 +186,16 @@ def upload_photo():
         datetime_original = datetime_original.strftime("%Y-%m-%d %H:%M:%S")
     else:
         flash("This photo is not dated. We assumed is today.")
-
-    url = upload_file_to_s3(file_path, file.filename,
+    user_id = flask_login.current_user.get_id()
+    url = upload_file_to_s3(file_path, 'users/%s/%s' % (user_id, file.filename),
                             file.content_type, app.config["S3_BUCKET"])
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     cur = get_db().execute("""
         insert into photos
         (object, dt_uploaded, dt,original_name, bytessize, width, height, user_id)
         values
-        (?,?,?,?,?,?,?,?)""", (url, now, datetime_original or now, file.filename,
+        (?,?,?,?,?,?,?,?)""", (url, now, datetime_original or now,
+                               file.filename,
                                bytessize, width, height,
                                flask_login.current_user.get_id(),))
     g._database.commit()
@@ -207,13 +208,14 @@ def upload_photo():
 @flask_login.login_required
 def delete_photo(id_image):
     cur = get_db().execute(
-        "select id, object from photos where id=?", (id_image,)
+        "select id, object from photos where user_id=? and id=?",
+        (flask_login.current_user.get_id(), id_image,)
     )
     row = cur.fetchone()
 
     if not row:
         return "not found", 404
-
+    print("#" * 44)
     im = {
         "id": row[0],
         "object": row[1]
@@ -226,6 +228,7 @@ def delete_photo(id_image):
             app.config.get('S3_LOCATION'), ''
         )
     )
+
     cur = get_db().execute("delete from photos where id=?", (id_image,))
     g._database.commit()
     cur.close()

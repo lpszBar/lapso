@@ -12,6 +12,11 @@ create table photos (
        FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
+INSERT INTO photos VALUES(1,'http://cgd88nk23tgrndvq.s3.amazonaws.com/2nEX1r5ZtO4UKRsE.jpg','454685',2592,1944,NULL,'2019-08-27 13:28:01','2009-06-02 19:46:54','2nEX1r5ZtO4UKRsE.jpg',1);
+INSERT INTO photos VALUES(2,'http://cgd88nk23tgrndvq.s3.amazonaws.com/dQV7ctjQ1DIgJN8v.jpg','1274617',1944,2592,NULL,'2019-08-27 14:29:36','2010-05-02 20:07:18','dQV7ctjQ1DIgJN8v.jpg',2);
+INSERT INTO photos VALUES(3,'http://cgd88nk23tgrndvq.s3.amazonaws.com/sxCKwMftlfEdn1G2.png','76171',668,362,NULL,'2019-08-27 14:47:53','2019-08-27 14:47:53','sxCKwMftlfEdn1G2.png',2);
+INSERT INTO photos VALUES(4,'http://cgd88nk23tgrndvq.s3.amazonaws.com/41V6tyZX9ed1VUAc.jpg','2798715',2880,2160,NULL,'2019-08-27 15:07:50','2018-03-28 17:20:06','41V6tyZX9ed1VUAc.jpg',2);
+
 create table users (
        id INTEGER PRIMARY KEY,
        email TEXT,

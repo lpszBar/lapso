@@ -49,3 +49,22 @@ def test_badly_logged_user_cannot_get_root_page(app_client, db):
         data={'email': user.get('email'), 'password': 'BAD_PWD'}
     )
     assert response.headers.get('location') == 'http://localhost/login'
+
+
+def test_user_can_delete_its_own_image(app_client, db):
+    photo_of_user1 = db.execute(
+        "SELECT id FROM photos where user_id=?", (1,)
+    ).fetchone()[0]
+    response = app_client.post(
+        '/login',
+        data={'email': 'one@email.com', 'password': 'password1'}
+    )
+    assert response.headers.get('location') == 'http://localhost/'
+    assert app_client.get('/').status_code == 200
+    print("borrando", '/delete/%s' % photo_of_user1)
+    assert app_client.get('/delete/%s' % photo_of_user1).status_code == 302
+    photo_of_user1 = db.execute(
+        "SELECT id FROM photos where user_id=?", (1,)
+    ).fetchone()
+    print(photo_of_user1)
+    assert photo_of_user1 is None
