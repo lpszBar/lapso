@@ -109,8 +109,7 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return 'Unauthorized', 403
-
+    return redirect("/login")
 
 @app.route("/")
 @flask_login.login_required
