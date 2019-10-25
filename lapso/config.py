@@ -9,3 +9,4 @@ SECRET_KEY = os.urandom(32)
 PORT = 5000
 
 UPLOAD_FOLDER = "/tmp/"
+DATABASE = '/app/db/lapso.db'

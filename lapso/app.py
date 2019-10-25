@@ -13,7 +13,6 @@ from images import get_image_properties
 app = Flask(__name__)
 app.config.from_object("config")
 app.secret_key = 'LhZGNnC2pTt4CGkSQ9KaJqh5MfFnEBHvgjHBQ'
-DATABASE = '/app/db/lapso.db'
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -22,7 +21,7 @@ login_manager.init_app(app)
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(app.config.get('DATABASE'))
     return db
 
 
@@ -110,6 +109,7 @@ def logout():
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return redirect("/login")
+
 
 @app.route("/")
 @flask_login.login_required

@@ -10,7 +10,7 @@ def app_client():
 
 
 def test_root_page_needs_login(app_client):
-    assert app_client.get('/').status_code == 403
+    assert app_client.get('/').status_code == 302
 
 
 def test_root_page_does_not_accept_post(app_client):
@@ -22,15 +22,15 @@ def test_invalid_url_is_not_found(app_client):
 
 
 def test_get_upload_page_needs_login(app_client):
-    assert app_client.get('/upload').status_code == 403
+    assert app_client.get('/upload').status_code == 302
 
 
 def test_post_upload_page_needs_login(app_client):
-    assert app_client.post('/upload').status_code == 403
+    assert app_client.post('/upload').status_code == 302
 
 
 def test_get_delete_page_needs_login(app_client):
-    assert app_client.get('/delete/123').status_code == 403
+    assert app_client.get('/delete/123').status_code == 302
 
 
 def test_get_delete_page_needs_login(app_client):
