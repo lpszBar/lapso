@@ -6,14 +6,14 @@ import './App.css';
 function Book(props) {
 
   return (
-      <ul>
-       {props.photos.map( (photo) => 
-         <li key={photo.id}>
-          <img src={photo.url} />
-         </li>
-        )}
-      </ul>
-    )
+    <ul>
+     {props.photos.map( (photo) => 
+       <li key={photo.id}>
+        <img src={photo.url} />
+       </li>
+      )}
+    </ul>
+  )
 }
 
 function App() {
