@@ -1,24 +1,44 @@
 IMAGE_NAME = abelgvidal/lapso
 
+export REGISTRY_USER
+export REGISTRY_PASSWORD
+
+
+login:
+	@docker login -u="$(REGISTRY_USER)" -p="$(REGISTRY_PASSWORD)"
+
+push: test login imagefresh
+	@docker push $(IMAGE_NAME)
+
+deploy: push
+	ssh -t root@172.104.251.194 'docker stop lapso ||  mkdir -p /opt/lapso-db && touch /opt/lapso-db/lapso.db && docker run --rm -it --name=lapso -d -p 80:80 -v=/opt/lapso-db/lapso.db:/app/db/lapso.db $(IMAGE_NAME):latest'
+
+imagefresh:
+	@docker build --no-cache \
+		--build-arg LAPSO_S3_BUCKET_NAME="${LAPSO_S3_BUCKET_NAME}" \
+		--build-arg LAPSO_S3_ACCESS_KEY="${LAPSO_S3_ACCESS_KEY}" \
+		--build-arg LAPSO_S3_SECRET_ACCESS_KEY="${LAPSO_S3_SECRET_ACCESS_KEY}" \
+		. -t $(IMAGE_NAME)
+
 image:
-	docker build \
+	@docker build \
 		--build-arg LAPSO_S3_BUCKET_NAME="${LAPSO_S3_BUCKET_NAME}" \
 		--build-arg LAPSO_S3_ACCESS_KEY="${LAPSO_S3_ACCESS_KEY}" \
 		--build-arg LAPSO_S3_SECRET_ACCESS_KEY="${LAPSO_S3_SECRET_ACCESS_KEY}" \
 		. -t $(IMAGE_NAME)
 
 dev: image
-	docker run -it --rm -v $(CURDIR):/app -p 5000:5000 -w /app $(IMAGE_NAME)
+	@docker run -it --rm -v $(CURDIR):/app -p 5000:5000 -w /app $(IMAGE_NAME)
 
 test: image
-	docker run -it --rm -v $(CURDIR):/app -w /app --entrypoint pycodestyle $(IMAGE_NAME) --show-source --max-line-length=120 /app
-	docker run -it --rm -v $(CURDIR):/app -w /app/lapso/tests --entrypoint pytest -e PYTHONPATH=/app/lapso $(IMAGE_NAME) --verbose -p no:warnings
+	@docker run -it --rm -v $(CURDIR):/app -w /app --entrypoint pycodestyle $(IMAGE_NAME) --show-source --max-line-length=120 /app
+	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/tests --entrypoint pytest -e PYTHONPATH=/app/lapso $(IMAGE_NAME) --verbose -p no:warnings
 
 reset-db:
-	rm db/lapso.db
+	@rm db/lapso.db
 
 shell: image
-	docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint sh -e PYTHONPATH=/app/lapso $(IMAGE_NAME) 
+	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint sh -e PYTHONPATH=/app/lapso $(IMAGE_NAME) 
 
 python: image
-	docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint python -e PYTHONPATH=/app/lapso $(IMAGE_NAME) 
+	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint python -e PYTHONPATH=/app/lapso $(IMAGE_NAME) 
