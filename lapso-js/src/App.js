@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 
@@ -9,7 +8,7 @@ function Book(props) {
     <ul>
      {props.photos.map( (photo) => 
        <li key={photo.id}>
-        <img src={photo.url} />
+        <img src={photo.url} alt=""/>
        </li>
       )}
     </ul>
@@ -25,12 +24,6 @@ function App() {
   ]
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-           edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
       <Book className="App-book" photos={photos}/>
     </div>
   );

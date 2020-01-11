@@ -4,7 +4,7 @@ import sqlite3
 
 import flask_login
 from flask import (Flask, flash, g, redirect, render_template, request,
-                   send_from_directory)
+                   send_from_directory, jsonify)
 from hashpwd import verify_password
 from helpers import (allowed_file, delete_file_from_s3, random_string,
                      upload_file_to_s3)
@@ -111,40 +111,46 @@ def unauthorized_handler():
     return redirect("/login")
 
 
+def get_photos():
+    cur = get_db().execute(
+    """SELECT id, object, dt, bytessize, width, height
+       from photos
+       WHERE user_id=?
+       order by dt desc""", (flask_login.current_user.get_id(),)
+)
+    photos = [dict(id=row[0],
+          object=row[1],
+          dt=datetime.datetime.strptime(
+                row[2],
+                '%Y-%m-%d %H:%M:%S'
+             ).strftime("%d-%m-%Y %H:%M"),
+          d=datetime.datetime.strptime(
+                row[2],
+                '%Y-%m-%d %H:%M:%S'
+            ).strftime("%d %B %Y"),
+          d_dmy=datetime.datetime.strptime(
+                row[2],
+                '%Y-%m-%d %H:%M:%S'
+            ).strftime("%d-%m-%Y"),
+          d_my=datetime.datetime.strptime(
+                row[2],
+                '%Y-%m-%d %H:%M:%S'
+            ).strftime("%B %Y"),
+          bytessize=("{0:.3f}".format(int(row[3]) / (1024 * 1024))),
+          width=row[4],
+          height=row[5])
+          for row in cur.fetchall()]
+    cur.close()
+    return photos
+
 @app.route("/")
 @flask_login.login_required
 def index():
-    cur = get_db().execute(
-        """SELECT id, object, dt, bytessize, width, height
-           from photos
-           WHERE user_id=?
-           order by dt desc""", (flask_login.current_user.get_id(),)
-    )
-    photos = [dict(id=row[0],
-              object=row[1],
-              dt=datetime.datetime.strptime(
-                    row[2],
-                    '%Y-%m-%d %H:%M:%S'
-                 ).strftime("%d-%m-%Y %H:%M"),
-              d=datetime.datetime.strptime(
-                    row[2],
-                    '%Y-%m-%d %H:%M:%S'
-                ).strftime("%d %B %Y"),
-              d_dmy=datetime.datetime.strptime(
-                    row[2],
-                    '%Y-%m-%d %H:%M:%S'
-                ).strftime("%d-%m-%Y"),
-              d_my=datetime.datetime.strptime(
-                    row[2],
-                    '%Y-%m-%d %H:%M:%S'
-                ).strftime("%B %Y"),
-              bytessize=("{0:.3f}".format(int(row[3]) / (1024 * 1024))),
-              width=row[4],
-              height=row[5])
-              for row in cur.fetchall()]
-    cur.close()
-    return render_template("index.html", photos=photos)
+    return render_template("index.html", photos=get_photos())
 
+@app.route("/api/photos")
+def api_photos():
+    return jsonify(get_photos())
 
 @app.route("/upload")
 @flask_login.login_required
