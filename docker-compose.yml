@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  py:
+    build: './lapso-py'
+    ports:
+      - "5000:5000"
+  js:
+    build: './lapso-js'
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./lapso-js:/app
+
+

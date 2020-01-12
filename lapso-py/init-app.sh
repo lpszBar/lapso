@@ -10,4 +10,4 @@ sh ./init-db.sh
 cd ..
 
 echo "Starting app in dir ${PWD}"
-FLASK_ENV=development FLASK_APP=lapso/app.py flask run --host="0.0.0.0" --port=80
+FLASK_ENV=development FLASK_APP=app.py flask run --host="0.0.0.0" --port=5000
