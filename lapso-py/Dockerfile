@@ -10,13 +10,13 @@ ENV S3_SECRET_ACCESS_KEY $LAPSO_S3_SECRET_ACCESS_KEY
 
 RUN apk add --no-cache sqlite zlib-dev jpeg-dev build-base python-dev
 
-RUN pip install flask==1.1.1 boto3==1.9.196 Pillow==6.1.0 Flask-Login==0.4.1
+RUN pip install flask==1.1.1 boto3==1.9.196 Pillow==6.1.0 Flask-Login==0.4.1 Flask-CORS==3.0.8
 #tests
 RUN pip install pytest==5.1.1 pycodestyle==2.5.0
 
 #ENV LIBRARY_PATH=/lib:/usr/lib  # not sure if this is used for pillow
 
-COPY . /app
+####COPY . /app
 
 WORKDIR /app
 ENTRYPOINT  ["sh"]

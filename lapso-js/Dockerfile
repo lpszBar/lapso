@@ -1,8 +1,6 @@
 FROM node:13-stretch-slim
-COPY . /app
-WORKDIR /app
 
-RUN npm build
+WORKDIR /app/src/
 
-ENTRYPOINT  ["npm"]
-CMD ["start" "--host" "0.0.0.0" ]
+ENTRYPOINT  ["sh"]
+CMD ["start.sh" ]

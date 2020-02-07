@@ -3,6 +3,7 @@ import os
 import sqlite3
 
 import flask_login
+from flask_cors import CORS
 from flask import (Flask, flash, g, redirect, render_template, request,
                    send_from_directory, jsonify)
 from hashpwd import verify_password
@@ -11,6 +12,7 @@ from helpers import (allowed_file, delete_file_from_s3, random_string,
 from images import get_image_properties
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object("config")
 app.secret_key = 'LhZGNnC2pTt4CGkSQ9KaJqh5MfFnEBHvgjHBQ'
 
@@ -111,12 +113,12 @@ def unauthorized_handler():
     return redirect("/login")
 
 
-def get_photos():
+def get_photos(user_id):
     cur = get_db().execute(
     """SELECT id, object, dt, bytessize, width, height
        from photos
        WHERE user_id=?
-       order by dt desc""", (flask_login.current_user.get_id(),)
+       order by dt desc""", (user_id,)
 )
     photos = [dict(id=row[0],
           object=row[1],
@@ -146,11 +148,11 @@ def get_photos():
 @app.route("/")
 @flask_login.login_required
 def index():
-    return render_template("index.html", photos=get_photos())
+    return render_template("index.html", photos=get_photos(flask_login.current_user.get_id()))
 
 @app.route("/api/photos")
 def api_photos():
-    return jsonify(get_photos())
+    return jsonify({'photos': get_photos(1)})
 
 @app.route("/upload")
 @flask_login.login_required

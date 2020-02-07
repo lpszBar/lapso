@@ -2,9 +2,20 @@ version: '3'
 
 services:
   py:
-    build: './lapso-py'
+    build:
+      context: './lapso-py'
+      args:
+        - LAPSO_S3_BUCKET_NAME=${LAPSO_S3_BUCKET_NAME}
+        - LAPSO_S3_ACCESS_KEY=${LAPSO_S3_ACCESS_KEY}
+        - LAPSO_S3_SECRET_ACCESS_KEY=${LAPSO_S3_SECRET_ACCESS_KEY}
+    environment:
+      - S3_BUCKET_NAME=${LAPSO_S3_BUCKET_NAME}
+      - S3_ACCESS_KEY=${LAPSO_S3_ACCESS_KEY}
+      - S3_SECRET_ACCESS_KEY=${LAPSO_S3_SECRET_ACCESS_KEY}
     ports:
       - "5000:5000"
+    volumes:
+      - ./lapso-py:/app
   js:
     build: './lapso-js'
     ports:

@@ -27,7 +27,8 @@ image:
 		--build-arg LAPSO_S3_SECRET_ACCESS_KEY="${LAPSO_S3_SECRET_ACCESS_KEY}" \
 		. -t $(IMAGE_NAME)
 
-dev: image
+dev:
+	#	docker-compose up --force-recreate --build
 	@docker run -it --rm -v $(CURDIR):/app -p 5000:5000 -w /app $(IMAGE_NAME)
 
 test: image
