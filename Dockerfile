@@ -8,7 +8,7 @@ ENV S3_BUCKET_NAME $LAPSO_S3_BUCKET_NAME
 ENV S3_ACCESS_KEY $LAPSO_S3_ACCESS_KEY
 ENV S3_SECRET_ACCESS_KEY $LAPSO_S3_SECRET_ACCESS_KEY
 
-RUN apk add --no-cache sqlite zlib-dev jpeg-dev build-base python-dev
+RUN apk add --no-cache sqlite zlib-dev jpeg-dev build-base python-dev npm
 
 RUN pip install flask==1.1.1 boto3==1.9.196 Pillow==6.1.0 Flask-Login==0.4.1 Flask-CORS==3.0.8
 #tests

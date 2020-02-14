@@ -1,6 +1,7 @@
 import datetime
 import os
 import sqlite3
+import jinja2
 
 import flask_login
 from flask_cors import CORS
@@ -11,7 +12,18 @@ from helpers import (allowed_file, delete_file_from_s3, random_string,
                      upload_file_to_s3)
 from images import get_image_properties
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder="../static/build/static",
+)
+
+my_loader = jinja2.ChoiceLoader([
+    app.jinja_loader,
+    jinja2.FileSystemLoader('../static/build'),
+])
+app.jinja_loader = my_loader
+
+
 CORS(app)
 app.config.from_object("config")
 app.secret_key = 'LhZGNnC2pTt4CGkSQ9KaJqh5MfFnEBHvgjHBQ'
@@ -148,7 +160,9 @@ def get_photos(user_id):
 @app.route("/")
 @flask_login.login_required
 def index():
-    return render_template("index.html", photos=get_photos(flask_login.current_user.get_id()))
+    return render_template(
+        "index.html"
+    )
 
 @app.route("/api/photos")
 def api_photos():
