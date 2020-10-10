@@ -28,8 +28,7 @@ image:
 		. -t $(IMAGE_NAME)
 
 dev:
-	#	docker-compose up --force-recreate --build
-	@docker run -it --rm -v $(CURDIR):/app -p 5000:5000 -w /app $(IMAGE_NAME)
+	@docker run -it --rm -v $(CURDIR):/app -p 5000:5000 -p 3000:3000 -w /app $(IMAGE_NAME)
 
 test: image
 	@docker run -it --rm -v $(CURDIR):/app -w /app --entrypoint pycodestyle $(IMAGE_NAME) --show-source --max-line-length=120 /app
@@ -39,7 +38,7 @@ reset-db:
 	@rm db/lapso.db
 
 shell: image
-	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint sh -e PYTHONPATH=/app/lapso $(IMAGE_NAME) 
+	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint sh -e PYTHONPATH=/app/lapso $(IMAGE_NAME)
 
 python: image
-	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint python -e PYTHONPATH=/app/lapso $(IMAGE_NAME) 
+	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint python -e PYTHONPATH=/app/lapso $(IMAGE_NAME)

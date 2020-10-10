@@ -14,12 +14,12 @@ from images import get_image_properties
 
 app = Flask(
     __name__,
-    static_folder="../static/build/static",
+    static_folder="../static",
 )
 
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
-    jinja2.FileSystemLoader('../static/build'),
+    jinja2.FileSystemLoader('../static'),
 ])
 app.jinja_loader = my_loader
 
@@ -126,36 +126,38 @@ def unauthorized_handler():
 
 
 def get_photos(user_id):
-    cur = get_db().execute(
-    """SELECT id, object, dt, bytessize, width, height
+    cur = get_db().execute("""
+       SELECT id, object, dt, bytessize, width, height
        from photos
        WHERE user_id=?
-       order by dt desc""", (user_id,)
-)
-    photos = [dict(id=row[0],
-          object=row[1],
-          dt=datetime.datetime.strptime(
-                row[2],
-                '%Y-%m-%d %H:%M:%S'
+       order by dt desc""", (user_id,))
+    photos = [
+        dict(id=row[0],
+             object=row[1],
+             dt=datetime.datetime.strptime(
+                 row[2],
+                 '%Y-%m-%d %H:%M:%S'
              ).strftime("%d-%m-%Y %H:%M"),
-          d=datetime.datetime.strptime(
-                row[2],
-                '%Y-%m-%d %H:%M:%S'
-            ).strftime("%d %B %Y"),
-          d_dmy=datetime.datetime.strptime(
-                row[2],
-                '%Y-%m-%d %H:%M:%S'
-            ).strftime("%d-%m-%Y"),
-          d_my=datetime.datetime.strptime(
-                row[2],
-                '%Y-%m-%d %H:%M:%S'
-            ).strftime("%B %Y"),
-          bytessize=("{0:.3f}".format(int(row[3]) / (1024 * 1024))),
-          width=row[4],
-          height=row[5])
-          for row in cur.fetchall()]
+             d=datetime.datetime.strptime(
+                 row[2],
+                 '%Y-%m-%d %H:%M:%S'
+             ).strftime("%d %B %Y"),
+             d_dmy=datetime.datetime.strptime(
+                 row[2],
+                 '%Y-%m-%d %H:%M:%S'
+             ).strftime("%d-%m-%Y"),
+             d_my=datetime.datetime.strptime(
+                 row[2],
+                 '%Y-%m-%d %H:%M:%S'
+             ).strftime("%B %Y"),
+             bytessize=("{0:.3f}".format(int(row[3]) / (1024 * 1024))),
+             width=row[4],
+             height=row[5])
+        for row in cur.fetchall()
+    ]
     cur.close()
     return photos
+
 
 @app.route("/")
 @flask_login.login_required
@@ -164,9 +166,11 @@ def index():
         "index.html"
     )
 
+
 @app.route("/api/photos")
 def api_photos():
     return jsonify({'photos': get_photos(1)})
+
 
 @app.route("/upload")
 @flask_login.login_required

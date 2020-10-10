@@ -9,7 +9,7 @@ cd db
 sh ./init-db.sh
 cd ..
 
-cd static && npm run build && cd ..
+#cd static && (npm start &) && cd ..
 
 cd server
 echo "Starting app in dir ${PWD}"
