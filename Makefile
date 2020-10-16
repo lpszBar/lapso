@@ -11,9 +11,6 @@ help:
 login:
 	@docker login -u="$(REGISTRY_USER)" -p="$(REGISTRY_PASSWORD)"
 
-push: test login imagefresh  ## Push image to registry
-	@docker push $(IMAGE_NAME)
-
 deploy: push  ## Deploy 
 	ssh -t root@172.104.251.194 'docker stop lapso ||  mkdir -p /opt/lapso-db && touch /opt/lapso-db/lapso.db && docker run --rm -it --name=lapso -d -p 80:80 -v=/opt/lapso-db/lapso.db:/app/db/lapso.db $(IMAGE_NAME):latest'
 
@@ -38,11 +35,14 @@ test: image	 ## Run tests
 	@docker run -it --rm -v $(CURDIR):/app -w /app --entrypoint pycodestyle $(IMAGE_NAME) --show-source --max-line-length=120 /app
 	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/tests --entrypoint pytest -e PYTHONPATH=/app/lapso $(IMAGE_NAME) --verbose -p no:warnings
 
-reset-db:	## Reset database
+reset-db:	 ## Reset database
 	@rm db/lapso.db
 
-shell: image    ## Get a shell in the image
+shell: image    ## Get a shell
 	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint sh -e PYTHONPATH=/app/lapso $(IMAGE_NAME)
 
-python: image	## Get a python REPL in the image
+python: image	## Get a python REPL
 	@docker run -it --rm -v $(CURDIR):/app -w /app/lapso/ --entrypoint python -e PYTHONPATH=/app/lapso $(IMAGE_NAME)
+
+push: test login imagefresh  ## Push image to registry
+	@docker push $(IMAGE_NAME)
