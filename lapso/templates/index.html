@@ -3,7 +3,166 @@
 {% block content %}
 
 
-              <h1>lapso</h1>
+
+
+  <link rel="stylesheet" href="css/lightbox.css">
+
+<style>
+
+.album {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: baseline;
+}
+.photo {
+    padding:20px;
+    margin-right:20px;
+    border: 1px solid gainsboro;
+    font-size: 10px;
+}
+.flashes {
+    color: red;
+    font-size:33px;
+}
+</style>
+
+
+ 
+   
+ 
+
+
+ 
+
+     
+
+     <table width="100%">
+       <tr>
+         <td>
+
+           <h2>Photos</h2>
+
+                  
+
+           <section>
+
+            {% for photo in photos %}
+             <div>
+                  
+                <a name="January 2020"><h2>{{ photo.dt }}</h2></a>
+
+                  <a data-lightbox="foto"
+                     href="{{ photo.object }}"
+                     data-alt="0.077 - 541x961">
+                    <img class="example-image" src="{{ photo.object }}" height="{{ photo.width }}">
+                  </a>
+
+                  [<a href="/delete/{{ photo.id }}">x</a>]
+                 
+             </div>
+
+             {% endfor %}
+     
+          </section>
+
+         </td>
+         <td>
+           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         </td>
+         <td valign="top" width="200">
+
+           
+
+           <section>
+             <div>
+
+              
+
+              
+
+              <a href="#January 2020">January 2020</a> <br><br>
+
+              
+
+              
+
+              
+
+              
+
+              <a href="#December 2019">December 2019</a> <br><br>
+
+              
+
+              
+
+              
+
+              
+
+              <a href="#December 2017">December 2017</a> <br><br>
+
+              
+
+              
+
+              
+
+              
+
+              <a href="#October 2017">October 2017</a> <br><br>
+
+              
+
+              
+
+              
+
+              
+
+              <a href="#April 2014">April 2014</a> <br><br>
+
+              
+
+              
+
+              
+
+              
+
+              <a href="#July 2013">July 2013</a> <br><br>
+
+              
+
+              
+
+              
+
+              
+
+              
+
+              
+
+              
+
+         </td>
+       </tr>
+     </table>
+
+
+<script src="js/lightbox-plus-jquery.min.js"></script>
+
+
+<script>
+    lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true
+    })
+</script>
+
 
 
 {% endblock %}

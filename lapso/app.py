@@ -162,8 +162,10 @@ def get_photos(user_id):
 @app.route("/")
 @flask_login.login_required
 def index():
+    photos = get_photos(1)
     return render_template(
-        "index.html"
+        "index.html",
+        photos=photos,
     )
 
 
