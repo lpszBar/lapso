@@ -12,7 +12,7 @@ login:
 	@docker login -u="$(REGISTRY_USER)" -p="$(REGISTRY_PASSWORD)"
 
 deploy:  ## Deploy 
-	ssh root@139.162.156.20 'docker stop lapso ||  mkdir -p /opt/lapso-db && touch /opt/lapso-db/lapso.db && docker pull abelgvidal/lapso && docker run --rm -it --name=lapso -d -p 80:80 -v=/opt/lapso-db/lapso.db:/app/db/lapso.db $(IMAGE_NAME):latest'
+	@ssh root@139.162.156.20 "bash -s" < ./deploy.sh
 
 imagefresh:  ## Build a fresh image
 	@docker build --no-cache \
