@@ -11,7 +11,7 @@ help:
 login:
 	@docker login -u="$(REGISTRY_USER)" -p="$(REGISTRY_PASSWORD)"
 
-deploy:  ## Deploy 
+deploy: push ## Deploy 
 	sleep 180 && ssh root@139.162.156.20 "bash -s" < ./deploy.sh
 
 imagefresh:  ## Build a fresh image
