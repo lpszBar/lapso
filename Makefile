@@ -12,7 +12,7 @@ login:
 	@docker login -u="$(REGISTRY_USER)" -p="$(REGISTRY_PASSWORD)"
 
 deploy: push ## Deploy 
-	sleep 180 && ssh root@139.162.156.20 "bash -s" < ./deploy.sh
+	ssh root@139.162.156.20 "bash -s" < ./deploy.sh
 
 imagefresh:  ## Build a fresh image
 	@docker build --no-cache \
@@ -29,7 +29,7 @@ image:	 ## Build an image
 		. -t $(IMAGE_NAME)
 
 dev:    ## Run development server
-	@docker run -it --rm -v $(CURDIR):/app -p 5000:5000 -p 3000:3000 -w /app $(IMAGE_NAME)
+	docker run -it --rm -v $(CURDIR):/app -p 80:5000 -w /app $(IMAGE_NAME)
 
 test: image	 ## Run tests
 	@docker run -it --rm -v $(CURDIR):/app -w /app --entrypoint pycodestyle $(IMAGE_NAME) --show-source --max-line-length=120 /app
